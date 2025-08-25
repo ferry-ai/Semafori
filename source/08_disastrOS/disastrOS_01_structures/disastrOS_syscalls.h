@@ -15,4 +15,9 @@ void internal_spawn();
 
 void internal_shutdown();
 
+void internal_semOpen();
+void internal_semClose();
+void internal_semWait();
+void internal_semPost();
+
 void internal_schedule();

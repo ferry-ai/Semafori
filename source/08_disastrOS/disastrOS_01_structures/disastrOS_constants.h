@@ -27,6 +27,10 @@
 #define DSOS_CALL_SPAWN     5
 #define DSOS_CALL_SLEEP     6
 #define DSOS_CALL_SHUTDOWN  7
+#define DSOS_CALL_SEMOPEN   8
+#define DSOS_CALL_SEMCLOSE  9
+#define DSOS_CALL_SEMWAIT   10
+#define DSOS_CALL_SEMPOST   11
 
 // scheduling
 #define ALPHA 0.5f

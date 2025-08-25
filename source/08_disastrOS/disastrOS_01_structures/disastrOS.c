@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include "disastrOS.h"
 #include "disastrOS_syscalls.h"
-
+#include "disastrOS_semaphores.h"
 
 
 
@@ -66,7 +66,6 @@ void disastrOS_trap(){
     disastrOS_printStatus();
   }
 }
-
 int disastrOS_syscall(int syscall_num, ...) {
   assert(running); 
   va_list ap;
@@ -89,6 +88,7 @@ void disastrOS_start(void (*f)(void*), void* f_args, char* logfile){
   /* INITIALIZATION OF SYSTEM STRUCTURES*/
   disastrOS_debug("initializing system structures\n");
   PCB_init();
+  Sem_init();
   init_pcb=0;
 
   // populate the vector of syscalls and number of arguments for each syscall
@@ -112,6 +112,18 @@ void disastrOS_start(void (*f)(void*), void* f_args, char* logfile){
 
   syscall_vector[DSOS_CALL_SHUTDOWN]      = internal_shutdown;
   syscall_numarg[DSOS_CALL_SHUTDOWN]      = 0;
+
+  syscall_vector[DSOS_CALL_SEMOPEN]      = internal_semOpen;
+  syscall_numarg[DSOS_CALL_SEMOPEN]      = 2;
+
+  syscall_vector[DSOS_CALL_SEMCLOSE]     = internal_semClose;
+  syscall_numarg[DSOS_CALL_SEMCLOSE]     = 1;
+
+  syscall_vector[DSOS_CALL_SEMWAIT]      = internal_semWait;
+  syscall_numarg[DSOS_CALL_SEMWAIT]      = 1;
+
+  syscall_vector[DSOS_CALL_SEMPOST]      = internal_semPost;
+  syscall_numarg[DSOS_CALL_SEMPOST]      = 1;
 
   // setup the scheduling lists
   running=0;
@@ -156,6 +168,22 @@ void disastrOS_shutdown() {
   disastrOS_syscall(DSOS_CALL_SHUTDOWN);
 }
 
+int disastrOS_semOpen(int id, int init){
+  return disastrOS_syscall(DSOS_CALL_SEMOPEN, id, init);
+}
+
+int disastrOS_semClose(int id){
+  return disastrOS_syscall(DSOS_CALL_SEMCLOSE, id);
+}
+
+int disastrOS_semWait(int id){
+  return disastrOS_syscall(DSOS_CALL_SEMWAIT, id);
+}
+
+int disastrOS_semPost(int id){
+  return disastrOS_syscall(DSOS_CALL_SEMPOST, id);
+}
+
 int disastrOS_getpid(){
   if (! running)
     return -1;
@@ -175,4 +203,4 @@ void disastrOS_printStatus(){
   printf("\nZombie: ");
   PCBList_print(&zombie_list);
   printf("\n***********************************************\n\n");
-};
+}
