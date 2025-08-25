@@ -7,12 +7,13 @@ RM=rm -f
 CPPFLAGS=-I.
 
 HEADERS=disastrOS.h\
-	disastrOS_constants.h\
-	disastrOS_globals.h\
-	disastrOS_pcb.h\
-	disastrOS_syscalls.h\
-	linked_list.h\
-	pool_allocator.h
+        disastrOS_constants.h\
+        disastrOS_globals.h\
+        disastrOS_pcb.h\
+        disastrOS_syscalls.h\
+        disastrOS_semaphores.h\
+        linked_list.h\
+        pool_allocator.h
 
 OBJS=pool_allocator.o\
      linked_list.o\
@@ -25,6 +26,8 @@ OBJS=pool_allocator.o\
      disastrOS_shutdown.o\
      disastrOS_schedule.o\
      disastrOS_preempt.o\
+     disastrOS_semaphores.o\
+     disastrOS_sem_syscalls.o\
 
 LIBS=libdisastrOS.a
 BINS=disastrOS_test
