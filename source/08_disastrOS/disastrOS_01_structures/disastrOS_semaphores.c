@@ -102,3 +102,35 @@ SemDescriptorPtr* SemDescriptorPtr_alloc(SemDescriptor* descriptor) {
 int SemDescriptorPtr_free(SemDescriptorPtr* d) {
   return PoolAllocator_releaseBlock(&_sem_descriptor_ptr_allocator, d);
 }
+Sem* Sem_byId(int id) {
+  ListItem* item = semaphores_list.first;
+  while (item) {
+    Sem* s = (Sem*) item;
+    if (s->id == id)
+      return s;
+    item = item->next;
+  }
+  return 0;
+}
+
+SemDescriptor* SemDescriptor_byFd(PCB* pcb, int fd) {
+  ListItem* item = pcb->sem_descriptors.first;
+  while (item) {
+    SemDescriptor* d = (SemDescriptor*) item;
+    if (d->fd == fd)
+      return d;
+    item = item->next;
+  }
+  return 0;
+}
+
+SemDescriptorPtr* SemDescriptorPtr_findByDescriptor(ListHead* lh, SemDescriptor* d) {
+  ListItem* item = lh->first;
+  while (item) {
+    SemDescriptorPtr* ptr = (SemDescriptorPtr*) item;
+    if (ptr->descriptor == d)
+      return ptr;
+    item = item->next;
+  }
+  return 0;
+}

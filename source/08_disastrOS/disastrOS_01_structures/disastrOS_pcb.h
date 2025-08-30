@@ -20,6 +20,8 @@ typedef struct PCB{
   int signals;
   int signals_mask;
   ListHead descriptors;
+  ListHead sem_descriptors;
+  int last_sem_fd;
   struct PCB* parent;
   ListHead children;
   ucontext_t cpu_state;

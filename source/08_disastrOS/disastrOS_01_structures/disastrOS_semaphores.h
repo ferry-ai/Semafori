@@ -52,3 +52,7 @@ SemDescriptorPtr* SemDescriptorPtr_alloc(SemDescriptor* descriptor);
 // Libera un SemDescriptorPtr
 int SemDescriptorPtr_free(SemDescriptorPtr* d);
 
+// Helpers
+Sem* Sem_byId(int id);
+SemDescriptor* SemDescriptor_byFd(PCB* pcb, int fd);
+SemDescriptorPtr* SemDescriptorPtr_findByDescriptor(ListHead* lh, SemDescriptor* d);
