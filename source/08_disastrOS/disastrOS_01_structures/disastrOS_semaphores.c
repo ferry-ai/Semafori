@@ -3,6 +3,7 @@
 #include "disastrOS_semaphores.h"
 #include "pool_allocator.h"
 #include "disastrOS_constants.h"
+#include "disastrOS_globals.h"
 
 #define SEM_SIZE sizeof(Sem)
 #define SEM_MEMSIZE (sizeof(Sem)+sizeof(int))
@@ -133,4 +134,41 @@ SemDescriptorPtr* SemDescriptorPtr_findByDescriptor(ListHead* lh, SemDescriptor*
     item = item->next;
   }
   return 0;
+}
+void sem_cleanup_on_exit(PCB* pcb) {
+  if (!pcb)
+    return;
+
+  ListItem* item = pcb->sem_descriptors.first;
+  while (item) {
+    ListItem* next = item->next;
+    SemDescriptor* des = (SemDescriptor*) item;
+    Sem* sem = des->sem;
+
+    SemDescriptorPtr* waiting_ptr = SemDescriptorPtr_findByDescriptor(&sem->waiting_list, des);
+    if (waiting_ptr) {
+      List_detach(&sem->waiting_list, (ListItem*) waiting_ptr);
+      SemDescriptorPtr_free(waiting_ptr);
+      sem->count++;
+      if (pcb->status == Waiting) {
+        List_detach(&waiting_list, (ListItem*) pcb);
+      }
+    } else {
+      SemDescriptorPtr* active_ptr = SemDescriptorPtr_findByDescriptor(&sem->descriptors, des);
+      if (active_ptr) {
+        List_detach(&sem->descriptors, (ListItem*) active_ptr);
+        SemDescriptorPtr_free(active_ptr);
+      }
+    }
+
+    List_detach(&pcb->sem_descriptors, (ListItem*) des);
+    SemDescriptor_free(des);
+
+    if (sem->descriptors.first == 0 && sem->waiting_list.first == 0) {
+      List_detach(&semaphores_list, (ListItem*) sem);
+      Sem_free(sem);
+    }
+
+    item = next;
+  }
 }

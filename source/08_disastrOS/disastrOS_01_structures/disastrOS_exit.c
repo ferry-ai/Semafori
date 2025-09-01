@@ -30,6 +30,7 @@ void internal_exit(){
     PCB* pcb=pcb_ptr->pcb;
     pcb->signals |= (DSOS_SIGHUP & pcb->signals_mask);
   }
+  sem_cleanup_on_exit(running);
 
   running->status=Zombie;
   List_insert(&zombie_list, zombie_list.last, (ListItem*) running);

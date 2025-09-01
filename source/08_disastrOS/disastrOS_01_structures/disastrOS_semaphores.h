@@ -56,3 +56,6 @@ int SemDescriptorPtr_free(SemDescriptorPtr* d);
 Sem* Sem_byId(int id);
 SemDescriptor* SemDescriptor_byFd(PCB* pcb, int fd);
 SemDescriptorPtr* SemDescriptorPtr_findByDescriptor(ListHead* lh, SemDescriptor* d);
+
+// Cleanup
+void sem_cleanup_on_exit(PCB* pcb);
