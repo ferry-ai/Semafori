@@ -4,6 +4,8 @@
 #include "disastrOS.h"
 #include "disastrOS_syscalls.h"
 
+void sem_cleanup_on_exit(PCB* pcb);
+
 // called upon termination
 // moves the process to a zombie status
 // if the process has children they need to be reparented to
