@@ -49,7 +49,9 @@ PCB* PCB_alloc() {
   pcb->signals=0;
   pcb->signals_mask=0xFFFFFFFF;
   pcb->status=Invalid;
-  List_init(&pcb->descriptors);
+  List_init(&pcb->descriptors); //
+  List_init(&pcb->sem_descriptors);
+  pcb->last_sem_fd=0;
   pcb->parent=0;
   pcb->timer=0;
   List_init(&pcb->children);

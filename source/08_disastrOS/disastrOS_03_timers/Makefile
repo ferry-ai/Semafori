@@ -1,14 +1,15 @@
 CC=gcc
-CCOPTS=--std=gnu99 -Wall  -D_DISASTROS_DEBUG_
+CCOPTS=--std=gnu99 -Wall
 AR=ar
 HEADERS=disastrOS.h\
-	disastrOS_constants.h\
-	disastrOS_globals.h\
-	disastrOS_pcb.h\
-	disastrOS_syscalls.h\
-	disastrOS_timer.h\
-	linked_list.h\
-	pool_allocator.h
+        disastrOS_constants.h\
+        disastrOS_globals.h\
+        disastrOS_pcb.h\
+        disastrOS_syscalls.h\
+        disastrOS_timer.h\
+        disastrOS_semaphores.h\
+        linked_list.h\
+        pool_allocator.h
 
 OBJS=pool_allocator.o\
      linked_list.o\
@@ -22,11 +23,13 @@ OBJS=pool_allocator.o\
      disastrOS_sleep.o\
      disastrOS_shutdown.o\
      disastrOS_schedule.o\
-     disastrOS_preempt.o
+     disastrOS_preempt.o\
+     disastrOS_semaphores.o\
+     disastrOS_sem_syscalls.o
 
 LIBS=libdisastrOS.a
 
-BINS=disastrOS_test
+BINS=disastrOS_test prodcons_demo
 
 #disastros_test
 
@@ -42,7 +45,10 @@ libdisastrOS.a: $(OBJS)
 	$(AR) -rcs $@ $^
 	$(RM) $(OBJS)
 
-disastrOS_test:		disastrOS_test.c $(LIBS)
+disastrOS_test: disastrOS_test.c $(LIBS)
+	$(CC) $(CCOPTS) -o $@ $^
+
+prodcons_demo: prodcons_demo.c $(LIBS)
 	$(CC) $(CCOPTS) -o $@ $^
 
 clean:

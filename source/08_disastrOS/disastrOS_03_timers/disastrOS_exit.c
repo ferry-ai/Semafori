@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "disastrOS.h"
 #include "disastrOS_syscalls.h"
+#include "disastrOS_semaphores.h"
 
 // called upon termination
 // moves the process to a zombie status
@@ -30,6 +31,8 @@ void internal_exit(){
     PCB* pcb=pcb_ptr->pcb;
     pcb->signals |= (DSOS_SIGHUP & pcb->signals_mask);
   }
+
+  sem_cleanup_on_exit(running);
 
   running->status=Zombie;
   List_insert(&zombie_list, zombie_list.last, (ListItem*) running);
@@ -82,3 +85,4 @@ void internal_exit(){
     running=next_running;
   }
 }
+
