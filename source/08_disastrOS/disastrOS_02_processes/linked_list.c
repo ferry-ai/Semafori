@@ -1,1 +1,1 @@
-../disastrOS_01_structures/linked_list.c
+#include "../disastrOS_01_structures/linked_list.c"

@@ -28,4 +28,3 @@ extern ucontext_t main_context;
 
 // this is used for shutting down (set it to 1, and return the control to main)
 extern int shutdown_now;
-

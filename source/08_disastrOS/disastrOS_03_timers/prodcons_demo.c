@@ -60,7 +60,7 @@ void producer_task(void* args) {
     disastrOS_semWait(mutex_fd);
     log_status("P", id, "entered critical section");
 
-    int item = id * 1000 + i;
+    int item = (id + 1) * 1000 + i;
     buf_put(item);
     printf("[P%d] put %d\n", id, item);
 
@@ -68,7 +68,7 @@ void producer_task(void* args) {
     disastrOS_semPost(fill_fd);
     log_status("P", id, "released mutex and signaled fill");
 
-    disastrOS_sleep(40);
+    disastrOS_sleep(20);
   }
 
   for (int c = 0; c < N_CONSUMERS; ++c) {
@@ -103,11 +103,12 @@ void consumer_task(void* args) {
     disastrOS_semWait(fill_fd);
     printf("  [C%d] waiting on SEM_MUTEX\n", id);
     disastrOS_semWait(mutex_fd);
-    disastrOS_sleep(20);
+    disastrOS_sleep(5);
 
     log_status("C", id, "entered critical section");
 
     int item = buf_get();
+    printf("[C%d] got %d\n", id, item);
 
     disastrOS_semPost(mutex_fd);
     disastrOS_semPost(empty_fd);
@@ -121,7 +122,7 @@ void consumer_task(void* args) {
     }
 
     printf("  [C%d] got %d\n", id, item);
-    disastrOS_sleep(45);
+    disastrOS_sleep(25);
   }
 
   log_status("C", id, "exiting");
@@ -143,7 +144,7 @@ void init_task(void* args) {
   log_status("INIT", -1, "spawned idle task");
 
   for (int c = 0; c < N_CONSUMERS; ++c) {
-    disastrOS_spawn(consumer_task, (void*)(long)c);
+    disastrOS_spawn(consumer_task, (void*)(long)c); //la spawn ci chiama internal schedule
     char msg[64];
     snprintf(msg, sizeof(msg), "spawned consumer %d", c);
     log_status("INIT", -1, msg);

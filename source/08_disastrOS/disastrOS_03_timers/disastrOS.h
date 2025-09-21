@@ -29,5 +29,10 @@ void disastrOS_spawn(void (*f)(void*), void* args );
 void disastrOS_shutdown();
 void disastrOS_sleep(int);
 
+int disastrOS_semOpen(int id, int init);
+int disastrOS_semClose(int id);
+int disastrOS_semWait(int id);
+int disastrOS_semPost(int id);
+
 // debug function, prints the state of the internal system
 void disastrOS_printStatus();
